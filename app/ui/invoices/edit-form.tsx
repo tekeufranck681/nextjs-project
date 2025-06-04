@@ -9,7 +9,9 @@ import {
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { Button } from '@/app/ui/button';
-
+import {TrashIcon} from '@heroicons/react/24/outline';
+import { updateInvoice, State } from '@/app/lib/action';
+import { useActionState } from 'react';
 export default function EditInvoiceForm({
   invoice,
   customers,
@@ -17,8 +19,11 @@ export default function EditInvoiceForm({
   invoice: InvoiceForm;
   customers: CustomerField[];
 }) {
+  const initialState: State = { message: null, errors: {} };
+  const updateInvoiceWithId = updateInvoice.bind(null, invoice.id);
+  const [state, formAction] = useActionState(updateInvoiceWithId, initialState);
   return (
-    <form>
+    <form action={formAction}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         {/* Customer Name */}
         <div className="mb-4">
@@ -118,6 +123,23 @@ export default function EditInvoiceForm({
         </Link>
         <Button type="submit">Edit Invoice</Button>
       </div>
+    </form>
+  );
+}
+
+import { deleteInvoice } from '@/app/lib/action';
+ 
+// ...
+ 
+export function DeleteInvoice({ id }: { id: string }) {
+  const deleteInvoiceWithId = deleteInvoice.bind(null, id);
+ 
+  return (
+    <form action={deleteInvoiceWithId}>
+      <button type="submit" className="rounded-md border p-2 hover:bg-gray-100">
+        <span className="sr-only">Delete</span>
+        <TrashIcon className="w-4" />
+      </button>
     </form>
   );
 }
